@@ -43,7 +43,7 @@ async function run() {
             const cursor =  subcategoryCollection.find(); 
             const data = await cursor.toArray()
             const userData = data.filter(singleObject => singleObject.email === emails)
-            console.log(userData[0].username)
+            res.send(userData)
         })
 
         // Send a ping to confirm a successful connection
