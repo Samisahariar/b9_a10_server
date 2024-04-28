@@ -37,14 +37,21 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/alldata', async (req, res) =>{
+            const cursor = subcategoryCollection.find();
+            const alldata = await cursor.toArray();
+            res.send(alldata)
+        })
+
         app.get('/:email', async(req, res) =>{
             const emails = req.params.email
-            const query = { email : emails}; 
             const cursor =  subcategoryCollection.find(); 
             const data = await cursor.toArray()
             const userData = data.filter(singleObject => singleObject.email === emails)
             res.send(userData)
         })
+
+        
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
