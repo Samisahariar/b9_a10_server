@@ -98,9 +98,13 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/craftSection/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const singledata = await subcategoryCollection2.findOne(query)
+            res.send(singledata)
+        })
         
-
-
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
