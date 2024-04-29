@@ -30,6 +30,14 @@ async function run() {
 
         const a_10_DB = client.db("a_10_DB");
         const subcategoryCollection = a_10_DB.collection('data');
+        const subcategoryCollection2 = a_10_DB.collection('homepage');
+
+        
+        app.get('/homepage', async(req, res) =>{
+            const datasforhome = subcategoryCollection2.find();
+            const result = await datasforhome.toArray()
+            res.send(result)
+        })
 
         app.post('/data', async (req, res) => {
             const newData = req.body;
@@ -37,35 +45,62 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/alldata', async (req, res) =>{
+        app.get('/alldata', async (req, res) => {
             const cursor = subcategoryCollection.find();
             const alldata = await cursor.toArray();
             res.send(alldata)
         })
 
-        app.get('/:email', async(req, res) =>{
+        app.get('/:email', async (req, res) => {
             const emails = req.params.email;
-            const cursor =  subcategoryCollection.find(); 
+            const cursor = subcategoryCollection.find();
             const data = await cursor.toArray()
             const userData = data.filter(singleObject => singleObject.email === emails)
             res.send(userData)
         })
 
-        app.get('/user/:id', async(req, res) =>{
+        app.get('/user/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const singledata = await subcategoryCollection.findOne(query)
             res.send(singledata)
         })
 
-        app.put('/del/:id', async(req, res) =>{
+        app.put('/del/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await subcategoryCollection.deleteOne(query);
             res.send(result)
         })
 
+        app.put('/updatepage/:id', async (req, res) => {
+            const id = req.params.id;
+            const newItemData = req.body;
+            console.log(newItemData)
+            const options = { upsert: true };
+            const filter = { _id: new ObjectId(id) }
+            const coffe = {
+                $set: {
+                    email:newItemData.email,
+                    username:newItemData.username,
+                    photo:newItemData.photo,
+                    rating:newItemData.rating,
+                    itemname:newItemData.itemname,
+                    subcategory:newItemData.subcategory,
+                    price:newItemData.price,
+                    customization:newItemData.customization,
+                    processingtime:newItemData.processingtime,
+                    stockstatus:newItemData.stockstatus,
+                    description:newItemData.description
+                },
+            };
+            const result = await subcategoryCollection.updateOne(filter, coffe, options);
+            res.send(result)
+        })
+
         
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
