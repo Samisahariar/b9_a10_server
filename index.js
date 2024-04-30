@@ -98,11 +98,12 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/craftSection/:id', async(req, res) =>{
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const singledata = await subcategoryCollection2.findOne(query)
-            res.send(singledata)
+        app.get('/craftSection/:subcategory', async(req, res) =>{
+            const subcategory = req.params.subcategory;
+            const cursor = subcategoryCollection.find();
+            const subcategoryCards = await cursor.toArray()
+            const userData = subcategoryCards.filter(singleObject => singleObject.subcategory === subcategory)
+            res.send(userData)
         })
         
 
